@@ -11,11 +11,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.gymie.ui.theme.GymieTheme
+import kotlinx.coroutines.delay
 
 
 class LiveWorkoutActivity : ComponentActivity() {
@@ -25,6 +31,12 @@ class LiveWorkoutActivity : ComponentActivity() {
             buildLiveWorkoutActivity()
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LiveWorkoutComposablePreview() {
+    buildLiveWorkoutActivity()
 }
 
 @Composable
@@ -39,6 +51,15 @@ fun buildLiveWorkoutActivity(): Unit {
 
 @Composable
 fun LiveWorkoutComposable(time: String) {
+    var elapsedTimeInSeconds by remember { mutableStateOf(0L) }
+
+    LaunchedEffect(key1 = true) {
+        while (true) {
+            delay(1000)
+            elapsedTimeInSeconds++
+        }
+    }
+
     Surface() {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -46,10 +67,7 @@ fun LiveWorkoutComposable(time: String) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row() {
-                Text(
-                    text = "$time",
-                    fontSize = 80.sp
-                )
+                TimerText(elapsedTimeInSeconds)
             }
             Row() {
                 Text(
@@ -81,8 +99,14 @@ fun LiveWorkoutComposable(time: String) {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun LiveWorkoutComposablePreview() {
-    buildLiveWorkoutActivity()
+fun TimerText(elapsedTimeInSeconds: Long) {
+    val minutes = elapsedTimeInSeconds / 60
+    val seconds = elapsedTimeInSeconds % 60
+    val formattedTime = String.format("%02d:%02d", minutes, seconds)
+
+    Text(
+        text = formattedTime,
+        fontSize = 80.sp,
+    )
 }
