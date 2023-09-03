@@ -4,3 +4,6 @@ the ability to plan irregular workout routines. For example you train multiple s
 basketball, bodybuilding, cycling and swimming, but you don't train them regularly at the same
 days of the week. One week you might do more swimming, other you might spend more time in the gym.
 Gymie enables you to keep all past workouts, plans and goals in one place.
+
+## Current state of the project
+![State of the project](./docs/app.png)
