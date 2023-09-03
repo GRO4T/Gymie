@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
@@ -44,6 +43,7 @@ internal fun LiveWorkoutRoute() {
     LiveWorkoutScreen(LiveWorkoutViewModel())
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun LiveWorkoutScreen(viewModel: LiveWorkoutViewModel) {
     var elapsedTimeInSeconds by remember { mutableStateOf(0L) }
@@ -72,16 +72,36 @@ internal fun LiveWorkoutScreen(viewModel: LiveWorkoutViewModel) {
                     }
                     Row() {
                         Column() {
-                            Text(
-                                text = "0kg",
-                                fontSize = 40.sp
-                            )
+                            Row() {
+                                TextField(
+                                    modifier = Modifier
+                                        .width(150.dp)
+                                        .padding(10.dp),
+                                    value = viewModel.weight,
+                                    onValueChange = { value ->
+                                        if (value.length <= 3) {
+                                            viewModel.updateWeight(value.filter { it.isDigit() })
+                                        }
+                                    },
+                                    label = { Text("Weight [kg]") },
+                                )
+                            }
                         }
                         Column() {
-                            Text(
-                                text = "12 reps",
-                                fontSize = 40.sp
-                            )
+                            Row() {
+                                TextField(
+                                    modifier = Modifier
+                                        .width(100.dp)
+                                        .padding(10.dp),
+                                    value = viewModel.repCount,
+                                    onValueChange = { value ->
+                                        if (value.length <= 3) {
+                                            viewModel.updateRepCount(value.filter { it.isDigit() })
+                                        }
+                                    },
+                                    label = { Text("Reps") },
+                                )
+                            }
                         }
                     }
                     Row() {
@@ -122,7 +142,7 @@ fun ExerciseInput(viewModel: LiveWorkoutViewModel) {
     Column {
         TextField(
             modifier = Modifier
-                .fillMaxWidth()
+                .width(300.dp)
                 .onGloballyPositioned { coordinates -> textFieldSize = coordinates.size.toSize() },
             value = viewModel.exercise,
             onValueChange = {
@@ -135,8 +155,7 @@ fun ExerciseInput(viewModel: LiveWorkoutViewModel) {
         AnimatedVisibility(visible = isSuggestionsVisible) {
             Card(
                 modifier = Modifier
-                    .padding(horizontal = 5.dp)
-                    .width(textFieldSize.width.dp),
+                    .width(300.dp),
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 15.dp
                 ),
